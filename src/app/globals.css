@@ -1,3 +1,426 @@
+/* ============================================================
+   FYP Desk — Contribution Tracker & Valuation
+   Brand styles ported from the brand source repo
+   FYPCE/apps/fyp-service-page-v2 (app/globals.css, BCE lineage).
+   Palette: "Certainty Blue" light / "Midnight Certainty" dark.
+   Emerald is the seal: verified/money semantics, never a button
+   color, never inverted by the theme.
+   ============================================================ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================================
+   1. CSS CUSTOM PROPERTIES (design tokens)
+   ============================================================ */
+
+:root {
+  /* --- Colors: Light mode ("Certainty Blue") --- */
+  --color-bg-primary:    #ffffff;
+  --color-bg-secondary:  #f8fafc;
+  --color-bg-tertiary:   #f1f5f9;
+  --color-text-primary:  #0f172a;
+  --color-text-secondary:#475569;
+  --color-text-muted:    #94a3b8;
+  --color-border:        #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  --color-certainty-blue: #0F4C81;
+  --color-cyan-accent:    #0891B2;
+  --color-emerald:        #10B981;
+
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error:   #EF4444;
+  --color-error-bg: rgba(239, 68, 68, 0.08);
+
+  /* --- Radii - ONE corner radius everywhere (0.625rem) --- */
+  --radius:      0.625rem;
+  --radius-full: 9999px;
+
+  /* --- Shadows --- */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:  0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+
+  /* --- Transitions --- */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+/* --- Colors: Dark mode ("Midnight Certainty") ---
+   Emerald never changes: the seal does not invert. */
+[data-theme="dark"] {
+  --color-bg-primary:    #0b1120;
+  --color-bg-secondary:  #111827;
+  --color-bg-tertiary:   #1e293b;
+  --color-text-primary:  #f1f5f9;
+  --color-text-secondary:#94a3b8;
+  --color-text-muted:    #64748b;
+  --color-border:        #1e293b;
+  --color-border-strong: #334155;
+
+  --color-certainty-blue: #3B82F6;
+  --color-cyan-accent:    #22D3EE;
+  --color-error-bg: rgba(239, 68, 68, 0.15);
+}
+
+/* ============================================================
+   2. RESET & BASE
+   ============================================================ */
+
+body {
+  font-family: var(--font-montserrat), system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-oxanium), sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+code, pre, .mono {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.9em;
+}
+
+::selection {
+  background: rgba(15, 76, 129, 0.2);
+}
+
+[data-theme="dark"] ::selection {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+/* ============================================================
+   3. CONTAINER
+   ============================================================ */
+
+.bar-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .bar-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* ============================================================
+   4. BUTTONS - variants per brand (emerald is never a button)
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-certainty-blue);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background-color: var(--color-certainty-blue);
+  color: #ffffff;
+  border-color: var(--color-certainty-blue);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-cyan-accent);
+  border-color: var(--color-cyan-accent);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-border);
+  border-color: var(--color-text-secondary);
+}
+
+/* ============================================================
+   4b. TOP HEADER - simple, NOT sticky. Wide bar container.
+   Every header control is 32px tall, one radius, one border
+   treatment (the Q4 consistency fix, kept 1:1).
+   ============================================================ */
+
+.site-header {
+  background-color: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--transition-normal);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 60px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.header-wordmark {
+  height: 34px;
+  width: auto;
+  display: block;
+  overflow: visible;
+}
+
+.header-nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.header-nav-link:hover {
+  color: var(--color-certainty-blue);
+}
+
+/* --- Dot animation: tailwind-style bounce --- */
+
+@keyframes dot-bounce {
+  0%, 100% {
+    transform: translateY(-2.5px);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.dot-bounce {
+  animation: dot-bounce 1s cubic-bezier(0.8, 0, 1, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot-bounce { animation: none; }
+}
+
+/* --- Theme toggle: 26px buttons inside a 32px group --- */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 32px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: calc(var(--radius) - 2px);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.theme-toggle-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.theme-toggle-btn.active {
+  background-color: var(--color-certainty-blue);
+  color: #ffffff;
+}
+
+/* ============================================================
+   5. PANELS & CARDS - one radius, one border treatment
+   ============================================================ */
+
+.panel {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel-muted {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+/* ============================================================
+   6. PLAN-TAB STYLE SEGMENTED CONTROL (table / totals switch)
+   ============================================================ */
+
+.segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border-strong);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 44px;
+}
+
+.segment:hover {
+  border-color: var(--color-certainty-blue);
+  color: var(--color-certainty-blue);
+}
+
+.segment.active {
+  background-color: var(--color-certainty-blue);
+  border-color: var(--color-certainty-blue);
+  color: #ffffff;
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--color-certainty-blue);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   7. DATA TABLE
+   ============================================================ */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-oxanium), sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  vertical-align: middle;
+}
+
+.data-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.data-table tbody tr:hover {
+  background-color: var(--color-bg-tertiary);
+}
+
+.data-table td.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   8. CHIPS & PROGRESS BARS
+   ============================================================ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-tertiary);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--color-cyan-accent);
+}
+
+.bar-track {
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-tertiary);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--color-certainty-blue);
+  transition: width var(--transition-normal);
+}
+
+/* ============================================================
+   9. FOOTER
+   ============================================================ */
+
+.site-footer {
+  padding: 3rem 0 1.5rem;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
