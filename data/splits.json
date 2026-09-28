@@ -1,0 +1,19 @@
+{
+  "awarenessPct": 10,
+  "managementPct": 10,
+  "work": {
+    "environment-setup": 5,
+    "proposal": 15,
+    "proposal-ppt": 10,
+    "codebase-guidance-docs": 30,
+    "codebase-guidance-doc": 0,
+    "codebase-development": 25,
+    "final-documentation": 10,
+    "final-ppt": 5
+  },
+  "points": {
+    "codebase-guidance-doc": 0.25,
+    "codebase-guidance-docs": 1
+  },
+  "_note": "awareness + management are fixed (the 2 fixed people). Work weights sum to 100 = the 80% pool. 'codebase-guidance-doc' is points-based inside the docs slice: 4 docs x 0.25 = 1 full docs slice. Edit weights per deal if a deal overrides the default."
+}
