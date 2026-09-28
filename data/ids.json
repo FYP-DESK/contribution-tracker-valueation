@@ -1,6 +1,32 @@
 [
-  { "id": "akash", "name": "Akash Mirza", "roles": ["manager", "member"] },
-  { "id": "member1", "name": "Member 1 (edit me)", "roles": ["member"] },
-  { "id": "member2", "name": "Member 2 (edit me)", "roles": ["member"] },
-  { "id": "member3", "name": "Member 3 (edit me)", "roles": ["awareness", "member"] }
+  {
+    "id": "akash",
+    "name": "Akash Mirza",
+    "roles": [
+      "manager",
+      "member"
+    ]
+  },
+  {
+    "id": "behzad",
+    "name": "Behzad",
+    "roles": [
+      "member"
+    ]
+  },
+  {
+    "id": "abdullah",
+    "name": "Abdullah",
+    "roles": [
+      "member"
+    ]
+  },
+  {
+    "id": "umair",
+    "name": "Umair",
+    "roles": [
+      "awareness",
+      "member"
+    ]
+  }
 ]
