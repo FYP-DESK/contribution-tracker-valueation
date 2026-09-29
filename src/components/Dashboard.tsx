@@ -42,7 +42,7 @@ export default function Dashboard({ rows, deals, errors, grandTotalPkr }: Props)
       </header>
 
       {/* --- Segmented control: brand plan-tab pattern --- */}
-      <nav className="mb-6 flex gap-2">
+      <nav className="mb-6 flex flex-wrap gap-2">
         {(["table", "totals"] as const).map((t) => (
           <button
             key={t}
@@ -53,6 +53,9 @@ export default function Dashboard({ rows, deals, errors, grandTotalPkr }: Props)
             {t === "table" ? "Contribution table" : "Totals"}
           </button>
         ))}
+        <a href="/deals" className="segment">Deals</a>
+        <a href="/transactions" className="segment">Transactions</a>
+        <a href="/referrals" className="segment">Referrals</a>
       </nav>
 
       {/* --- Split config errors: brand error token --- */}
@@ -200,9 +203,14 @@ export default function Dashboard({ rows, deals, errors, grandTotalPkr }: Props)
         Split model per deal: awareness {10}% (fixed) + management {10}% (fixed) +
         work pool {80}% divided across slices (proposal, PPT, 4 docs, code, final
         docs, final PPT). Source of truth: each project repo&apos;s{" "}
-        <code className="text-cyan-accent">contribution-history/</code> — imported by{" "}
-        <code className="text-cyan-accent">npm run import</code>. Data files live in{" "}
-        <code className="text-cyan-accent">data/</code> (append-only in practice).
+        <code className="text-cyan-accent">contribution-history/</code> — imported
+        by pasting its <code className="text-cyan-accent">payload.json</code> (see{" "}
+        <code className="text-cyan-accent">AGENTS.md</code>). Money: record deals on{" "}
+        <a className="text-cyan-accent" href="/deals">/deals</a>, payments on{" "}
+        <a className="text-cyan-accent" href="/transactions">/transactions</a>, the
+        awareness offer on <a className="text-cyan-accent" href="/referrals">/referrals</a>.
+        Data files live in <code className="text-cyan-accent">data/</code> — saving
+        = commit + push.
       </footer>
     </main>
   );

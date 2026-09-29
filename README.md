@@ -1,10 +1,11 @@
 # contribution-tracker-valueation
 
-**Who did what, where, when — and what share it earns.**
+**Who did what, where, when — what share it earns — and what was paid.**
 
 The org-wide tracker for FYP Desk. Data files only in git (`data/`), a Next.js
-+ TypeScript single-page dashboard that reads them, and an import script that
-feeds from every project repo's `contribution-history/` module.
++ TypeScript dashboard that reads them, and **no scripts**: work records arrive
+by pasting a project repo's `contribution-history/payload.json` to an LLM agent
+working in this repo — the protocol lives in [`AGENTS.md`](AGENTS.md).
 
 ## The money model (per deal)
 
@@ -24,37 +25,56 @@ money is not redistributed to other slices. Edit weights in
 the work weights sum to 100% of the work pool and shows config errors on
 screen.
 
-## Dashboard
+## The money interfaces (git-as-database)
 
-One page, two tabs:
+Every form below **validates and generates the exact JSON** to paste into the
+data file; saving = commit + push. The dashboard reflects it on next load.
+An LLM agent in this repo can do the paste+validate+merge for you — give it
+[`AGENTS.md`](AGENTS.md).
 
-- **Contribution table** — contributor × total tasks, isolated per type
-  (proposals, proposal PPTs, 4-docs sets, single docs, codebases, final docs,
-  final PPTs), plus earned PKR. Click a row for the breakdown.
-- **Totals** — contributor cards; click one to see which projects/ideas they
-  contributed to, in percentage bars.
+| Page | What it does |
+|------|--------------|
+| `/` | contribution table + earned PKR per member (read-only) |
+| `/deals` | register a deal: group, reference number (`project#+group#+first-3-letters`), plan 1/2, fee, installment schedule, incoming referral |
+| `/transactions` | select a deal → see its previous payments → add one: amount, channel (EasyPaisa / JazzCash / cash), auto-numbered seq per deal |
+| `/referrals` | issue a deal's referral code (the deal's reference no), track single-use redemption, award 5% of the new deal's fee as a credit on the referrer's remaining payments |
+
+## Referral rules (locked)
+
+- Code = the issuing deal's `referenceNo`, e.g. `01-G2-HUJ`.
+- **Single use**: once redeemed, a code can never be redeemed again.
+- On redemption the **new** deal gets nothing discounted automatically — the
+  **referrer's** remaining payments are reduced by 5% of the new deal's fee,
+  booked as a `referral-credit` transaction on the referrer's deal.
 
 ## Data files (`data/` — the only place data lives)
 
 | File | Content |
 |------|---------|
-| `ids.json` | members: id, display name, roles (`manager`, `awareness`, `member`) |
+| `ids.json` | members: id, display name, roles (`manager`, `awareness`, `member`), optional email |
 | `splits.json` | the split model (weights + points) |
-| `deals.json` | deals: id, ideaId, repo, client, feePkr |
-| `contributions.json` | imported work records (append-only in practice) |
+| `deals.json` | deals: id, ideaId, repo, groupName, referenceNo, client, plan, feePkr, installments, referralCodeUsed, status |
+| `contributions.json` | imported work records (via payload paste) |
+| `transactions.json` | money received: tx id, deal, per-deal seq, amount, channel, kind, recordedBy |
+| `referrals.json` | referral codes: issuer, redemption state, single-use |
 
-## Import flow (the loop)
+Validation lives in `src/lib/validate.ts` — every error names the file, the
+record, the problem, and the exact fix (written so an LLM can act on it).
 
-1. A member finishes real work in a project repo → appends
-   `contribution-history/cNNN.md` (+ row in its `index.md`) — see the kit's
-   `instructions/contribution_history_instructions.md`.
-2. Anyone runs:
-   ```bash
-   node scripts/import-contributions.mjs ../fyp-idea-01-zameenchain
-   ```
-   Unknown repos are auto-registered in `deals.json` with fee 0 — set the
-   `ideaId`, `client`, and `feePkr` there once the deal is signed.
-3. Commit + push `data/`. The dashboard reflects it on next load.
+## The payload flow (replaces the old import script)
+
+```
+project repo: finish work → c(NNN).md + index row + regenerate contribution-history/payload.json
+      │
+      ▼  copy payload.json
+tracker: paste to an LLM agent (AGENTS.md Protocol 1) → validate → merge into data/contributions.json
+      │
+      ▼  commit + push data/
+dashboard shows the updated valuation
+```
+
+No scripts, no cross-repo paths, no OS-specific commands — works identically
+on Windows and Linux.
 
 ## Run
 
@@ -64,11 +84,8 @@ npm run dev        # http://localhost:3000
 npm run build && npm start   # production
 ```
 
-## Deploy (Vercel, free tier)
-
-Import the repo, framework preset **Next.js**. The dashboard reads `data/*.json`
-from the working directory — on Vercel, either commit the imported data (the
-normal flow) or call the import script in CI before build.
+Deploy on Vercel for the read-only dashboard. The form pages generate JSON —
+they never need server write access.
 
 ## Sibling repos
 

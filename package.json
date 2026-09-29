@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "import": "node scripts/import-contributions.mjs"
+    "start": "next start"
   },
   "dependencies": {
     "next": "^15.5.0",
